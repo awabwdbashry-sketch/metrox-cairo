@@ -1,172 +1,208 @@
-"use strict";
-
-// تغيير الصفحات
-function showSection(id) {
-    document.querySelectorAll(".section").forEach(sec => sec.classList.remove("active"));
-    document.getElementById(id).classList.add("active");
-}
-
-// التطبيق
-class MetroApp {
-
-    constructor() {
-        this.map = null;
-        this.markers = [];
-        this.routePolyline = null;
-
-        this.stations = [
-            {name:"عدلي منصور",lat:30.1472,lng:31.4214},
-            {name:"الهايكستب",lat:30.1393,lng:31.4046},
-            {name:"عمر بن الخطاب",lat:30.1311,lng:31.3902},
-            {name:"قباء",lat:30.1232,lng:31.3770},
-            {name:"النزهة",lat:30.1092,lng:31.3520},
-            {name:"نادي الشمس",lat:30.1025,lng:31.3398},
-            {name:"ألف مسكن",lat:30.0958,lng:31.3275},
-            {name:"هليوبوليس",lat:30.0887,lng:31.3152},
-            {name:"كلية البنات",lat:30.0815,lng:31.3028},
-            {name:"الاستاد",lat:30.0742,lng:31.2906},
-            {name:"المعرض",lat:30.0675,lng:31.2782},
-            {name:"العباسية",lat:30.0610,lng:31.2660},
-            {name:"عبده باشا",lat:30.0543,lng:31.2538},
-            {name:"الجيش",lat:30.0475,lng:31.2415},
-            {name:"باب الشعرية",lat:30.0410,lng:31.2292},
-            {name:"العتبة",lat:30.0350,lng:31.2170},
-            {name:"ناصر",lat:30.0290,lng:31.2050},
-            {name:"ماسبروا",lat:30.0230,lng:31.1930},
-            {name:"صفاء حجازي",lat:30.0170,lng:31.1810},
-            {name:"الكيت كات",lat:30.0110,lng:31.1690},
-            {name:"جامعة القاهرة",lat:30.0035,lng:31.2100}
-        ];
-
-        this.init();
-    }
-
-    init() {
-        this.populateSelects();
-        this.initMap();
-        this.bindEvents();
-    }
-
-    populateSelects() {
-        const fromSelect = document.getElementById("from");
-        const toSelect = document.getElementById("to");
-        this.stations.forEach((st, i) => {
-            fromSelect.add(new Option(st.name, i));
-            toSelect.add(new Option(st.name, i));
-        });
-    }
-
-    calculatePrice(distance) {
-        if (distance <= 9) return 8;
-        if (distance <= 16) return 10;
-        if (distance <= 23) return 15;
-        return 20;
-    }
-
-    bookTrip() {
-        const fromIndex = parseInt(document.getElementById("from").value);
-        const toIndex = parseInt(document.getElementById("to").value);
-
-        if (fromIndex === toIndex) {
-            alert("اختر محطة مختلفة");
-            return;
-        }
-
-        const distance = Math.abs(toIndex - fromIndex);
-        const price = this.calculatePrice(distance);
-        const time = distance * 2;
-
-        this.drawRoute(fromIndex, toIndex);
-        this.showTicket(fromIndex, toIndex, distance, price, time);
-    }
-
-    showTicket(from, to, distance, price, time) {
-        const ticketBox = document.getElementById("ticket");
-        const ticketInfo = document.getElementById("ticket-info");
-        const lat = this.stations[to].lat;
-        const lng = this.stations[to].lng;
-
-        ticketInfo.innerHTML = 
-            '<p>من: ${this.stations[from].name}</p>'
-            '<p>إلى: ${this.stations[to].name}</p>'
-            '<p>عدد المحطات: ${distance}</p>'
-            '<p>الزمن: ${time} دقيقة</p>'
-            '<p>السعر: ${price} جنيه</p>'
-            '<button id="mapBtn">افتح الموقع في Google Maps</button>'
-        ;
-
-        ticketBox.style.display = "block";
-
-        const btn = document.getElementById("mapBtn");
-        btn.addEventListener("click", function() {
-            window.open(
-                "https://www.google.com/maps?q=${lat},${lng}", "_blank");
-        });
-    }
-
-    initMap() {
-        const mapOptions = {
-            center: {lat:30.07, lng:31.30},
-            zoom: 11
-        };
-        this.map = new google.maps.Map(document.getElementById("googleMap"), mapOptions);
-
-        this.stations.forEach(st => {
-            const marker = new google.maps.Marker({
-                position: {lat: st.lat, lng: st.lng},
-                map: this.map,
-                title: st.name
-            });
-
-            const infoWindow = new google.maps.InfoWindow({
-                content: st.name
-            });
-marker.addListener("click", () => {
-                infoWindow.open(this.map, marker);
-                this.map.setZoom(15);
-                this.map.setCenter(marker.getPosition());
-            });
-
-            this.markers.push(marker);
-        });
-    }
-
-    drawRoute(from, to) {
-        if (this.routePolyline) this.routePolyline.setMap(null);
-
-        const start = Math.min(from, to);
-        const end = Math.max(from, to);
-
-        const pathCoords = this.stations.slice(start, end+1).map(st => ({lat: st.lat, lng: st.lng}));
-
-        this.routePolyline = new google.maps.Polyline({
-            path: pathCoords,
-            geodesic: true,
-            strokeColor: "#FF0000",
-            strokeOpacity: 1.0,
-            strokeWeight: 5
-        });
-
-        this.routePolyline.setMap(this.map);
-        this.map.fitBounds(new google.maps.LatLngBounds(
-            pathCoords[0],
-            pathCoords[pathCoords.length-1]
-        ));
-    }
-
-    bindEvents() {
-        document.getElementById("book-btn").addEventListener("click", () => this.bookTrip());
-        document.getElementById("pay-btn").addEventListener("click", () => {
-            const method = document.getElementById("payment").value;
-            alert("تم اختيار الدفع عبر: " + method + "\nهذه ميزة تجريبية فقط.");
-        });
-    }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    new MetroApp();
-
-    // FadeIn للصفحة الرئيسية
-    const homeContent = document.querySelector(".home-content");
-    setTimeout(() => homeContent.classList.add("visible"), 200);
+/* ===== Loader ===== */
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loader");
+  if(loader) loader.style.display = "none";
 });
+
+/* ===== Toast Notification ===== */
+function showToast(msg){
+  const t = document.getElementById("toast");
+  if(!t) return;
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=> t.classList.remove("show"), 3000);
+}
+
+/* ===== Dark/Light Mode ===== */
+const toggleBtn = document.getElementById("toggleMode");
+if(toggleBtn) toggleBtn.onclick = ()=> {
+  document.body.classList.toggle("light-mode");
+  // Update background images based on mode
+  if(document.body.classList.contains("light-mode")){
+    document.body.className = document.body.className.replace(/pyramid-body|login-body/g, "light-mode-body");
+  } else {
+    // Restore original body class
+    if(window.location.pathname.includes("home.html") || window.location.pathname.includes("tickets.html") || window.location.pathname.includes("map.html")){
+      document.body.className = document.body.className.replace(/light-mode-body/g, "pyramid-body");
+    } else if(window.location.pathname.includes("index.html")){
+      document.body.className = document.body.className.replace(/light-mode-body/g, "login-body");
+    }
+  }
+};
+
+/* ===== Language Switch ===== */
+const langSelect = document.getElementById("langSelect");
+if(langSelect) langSelect.onchange = ()=> changeLang(langSelect.value);
+
+function changeLang(lang){
+  const translations = {
+    ar:{
+      hero:"مترو القاهرة",
+      desc:"تجربة تنقل ذكية وسريعة",
+      ticket:"حجز تذكرة",
+      homeBtn:"الرئيسية",
+      mapBtn:"الخريطة",
+      ticketBtn:"حجز التذاكر"
+    },
+    en:{
+      hero:"Cairo Metro",
+      desc:"Smart & fast",
+      ticket:"Book Ticket",
+      homeBtn:"Home",
+      mapBtn:"Map",
+      ticketBtn:"Tickets"
+    }
+  };
+  const t = translations[lang] || translations.ar;
+  
+  if(document.getElementById("heroTitle")) document.getElementById("heroTitle").textContent = t.hero;
+  if(document.getElementById("heroDesc")) document.getElementById("heroDesc").textContent = t.desc;
+  if(document.getElementById("ticketTitle")) document.getElementById("ticketTitle").textContent = t.ticket;
+
+  // تحديث أزرار القائمة
+  const navButtons = document.querySelectorAll(".top-nav button");
+  navButtons.forEach(btn=>{
+    const key = btn.getAttribute("data-text");
+    if(key=="الرئيسية" || key=="Home") btn.textContent = t.homeBtn;
+    else if(key=="الخريطة" || key=="Map") btn.textContent = t.mapBtn;
+    else if(key=="حجز التذاكر" || key=="Tickets") btn.textContent = t.ticketBtn;
+  });
+}
+
+/* ===== Metro Lines & Stations ===== */
+const stationsAll = {
+  1:[
+    {name:"حلوان",lat:29.849,lng:31.334},{name:"المعادي",lat:29.960,lng:31.257},
+    {name:"دار السلام",lat:29.987,lng:31.242},{name:"السيدة زينب",lat:30.034,lng:31.235},
+    {name:"السادات",lat:30.044,lng:31.235},{name:"الشهداء",lat:30.061,lng:31.246},
+    {name:"حمامات القبة",lat:30.088,lng:31.287},{name:"المطرية",lat:30.121,lng:31.313},
+    {name:"المرج الجديدة",lat:30.152,lng:31.335}
+  ],
+  2:[
+    {name:"المنيب",lat:29.981,lng:31.212},{name:"الجيزة",lat:30.010,lng:31.207},
+    {name:"الدقي",lat:30.038,lng:31.210},{name:"السادات",lat:30.044,lng:31.235},
+    {name:"العتبة",lat:30.052,lng:31.246},{name:"شبرا الخيمة",lat:30.122,lng:31.244}
+  ],
+  3:[
+    {name:"عدلي منصور",lat:30.146,lng:31.421},{name:"هليوبوليس",lat:30.098,lng:31.320},
+    {name:"العتبة",lat:30.052,lng:31.246},{name:"ناصر",lat:30.053,lng:31.238},
+    {name:"الكيت كات",lat:30.066,lng:31.213},{name:"جامعة القاهرة",lat:30.027,lng:31.207}
+  ]
+};
+const lineColors = {1:"red",2:"blue",3:"green"};
+
+/* ===== Populate Ticket Stations ===== */
+function populateStations(line){
+  const from = document.getElementById("from");
+  const to = document.getElementById("to");
+  if(!from || !to) return;
+  from.innerHTML=""; to.innerHTML="";
+  let list=[];
+  if(line=="1") list = stationsAll[1].map(s=>s.name);
+  else if(line=="2") list = stationsAll[2].map(s=>s.name);
+  else if(line=="3") list = stationsAll[3].map(s=>s.name);
+  else list = [...stationsAll[1],...stationsAll[2],...stationsAll[3]].map(s=>s.name);
+  list.forEach(st=>{
+    from.innerHTML += `<option>${st}</option>`;
+    to.innerHTML += `<option>${st}</option>`;
+  });
+}
+if(document.getElementById("lineSelectTicket")) populateStations("all");
+const lineSelectTicket = document.getElementById("lineSelectTicket");
+if(lineSelectTicket){
+  lineSelectTicket.onchange = ()=> populateStations(lineSelectTicket.value);
+}
+/* ===== Payment Options ثابتة ===== */
+const wallets = ["Fawry","Bee","Vodafone Cash","Etisalat Cash","Meeza","Visa/MasterCard"];
+
+function generatePaymentOptions(){
+  const container = document.getElementById("wallets");
+  if(!container) return;
+  container.innerHTML = "";
+  wallets.forEach(w => {
+    const btn = document.createElement("button");
+    btn.className = "main-btn wallet-btn";
+    btn.textContent = w;
+    btn.onclick = ()=> showToast(`اخترت الدفع عبر: ${w}`);
+    container.appendChild(btn);
+  });
+}
+
+// نفذ فور تحميل الصفحة
+window.addEventListener("DOMContentLoaded", ()=>{
+  generatePaymentOptions();  // تظهر المحافظ بمجرد فتح الصفحة
+});
+
+/* ===== Ticket & QR + Barcode ===== */
+function calculateStations(from,to){
+  for(let key in stationsAll){
+    let line=stationsAll[key].map(s=>s.name);
+    let s=line.indexOf(from), e=line.indexOf(to);
+    if(s!==-1 && e!==-1) return Math.abs(e-s);
+  }
+  return 10; // تحويل بين الخطوط
+}
+function calculatePrice(stations){
+  if(stations<=9) return 8;
+  if(stations<=16) return 10;
+  return 15;
+}
+function generateTicket(){
+  let from = document.getElementById("from").value;
+  let to = document.getElementById("to").value;
+  let qty = parseInt(document.getElementById("qty").value);
+  
+  if(!from || !to || qty<=0){
+    showToast("يرجى اختيار المحطات وعدد التذاكر");
+    return;
+  }
+  
+  let stations = calculateStations(from,to);
+  let price = calculatePrice(stations)*qty;
+
+  document.getElementById("priceBox").innerHTML = `
+    <div class="ticket-card">
+      <h3>من: ${from}</h3>
+      <h3>إلى: ${to}</h3>
+      <h3>عدد المحطات: ${stations}</h3>
+      <h3>السعر الكلي: ${price} جنيه</h3>
+    </div>`;
+
+  document.getElementById("qrcode").innerHTML="";
+  new QRCode(document.getElementById("qrcode"),{
+    text:`MetroX | ${from}-${to} | ${price} EGP`,
+    width:150,height:150
+  });
+
+  JsBarcode("#barcode", `MetroX|${from}-${to}|${price}EGP`, {format:"CODE128", lineColor:"#000", width:2, height:40});
+  generatePaymentOptions();
+  showToast("تم إنشاء التذكرة بنجاح!");
+}
+
+/* ===== Leaflet Map ===== */
+if(document.getElementById("map")){
+  const map = L.map("map").setView([30.0444,31.2357], 11);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{attribution:"© OpenStreetMap"}).addTo(map);
+
+  function drawLine(key){
+    stationsAll[key].forEach(st=>{
+      L.circleMarker([st.lat, st.lng], {radius:6, color:lineColors[key], fillColor:lineColors[key], fillOpacity:1})
+      .addTo(map).bindTooltip(st.name,{permanent:true});
+    });
+    const coords=stationsAll[key].map(st=>[st.lat,st.lng]);
+    L.polyline(coords,{color:lineColors[key],weight:5}).addTo(map);
+  }
+
+  const lineSelect = document.getElementById("lineSelect");
+  if(lineSelect){
+    lineSelect.onchange=(e)=>{
+      map.eachLayer(l=>{
+        if(l instanceof L.Polyline || l instanceof L.CircleMarker) map.removeLayer(l);
+      });
+      if(e.target.value==="all"){
+        ["1","2","3"].forEach(l=>drawLine(l));
+      } else drawLine(e.target.value);
+    };
+  }
+  ["1","2","3"].forEach(l=>drawLine(l));
+}
