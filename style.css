@@ -1,144 +1,294 @@
-body{
+/* ===== إعدادات عامة ===== */
+*{
   margin:0;
-  font-family:system-ui;
-  color:rgba(235, 185, 6, 0.934);
-  direction:rtl;
-  transition:0.5s;
+  padding:0;
+  box-sizing:border-box;
 }
+
+body{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  direction: rtl;
+  color:white;
+  min-height:100vh;
+  transition:0.4s ease;
+}
+
+/* ===== الوضع الفاتح ===== */
 body.light-mode{
-  background:#f9f9f9;
+  background:#f4f4f4;
   color:#111;
 }
-body.light-mode-body{
-  background: url("photo_2026-02-11_17-33-44.jpg") center/cover no-repeat;
-  background-size:cover;
-}
-body.login-body{
-  display:flex; justify-content:center; align-items:center;
-  height:100vh;
-  background: url("metro-logo.jpg") center/cover no-repeat;
-  background-size:cover;
-}
-body.light-mode-body.login-body{
-  background: url("metro-logo.jpg") center/cover no-repeat;
-  background-size:cover;
-}
 
-/* ===== Login Page ===== */
+/* ================================================= */
+/* ================= صفحة الدخول ================== */
+/* ================================================= */
+
 .login-body{
-  display:flex; justify-content:center; align-items:center;
-  height:100vh;
-  background: url("metro-logo.jpg") center/cover no-repeat;
-  background-size:cover;
-}
-.login-card{
-  background: rgba(31,41,55,0.9);
-  padding:40px;
-  border-radius:20px;
-  display:flex; flex-direction:column; gap:15px;
-  width:320px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.5),0 0 10px gold;
-  animation:fadeIn 1s;
-  text-align:center;
-}
-.metro-logo{
-  width:120px;
-  margin:0 auto 20px auto;
-  display:block;
-  animation:scaleUp 1s ease;
-}
-
-/* ===== Home Page ===== */
-.pyramid-body{
-  background: url("photo_2026-02-11_17-33-44.jpg") center/cover no-repeat;
-  background-size:cover;
-}
-.top-nav{
-  display:flex; justify-content:space-between; align-items:center;
-  padding:15px;
-  background:rgba(0, 0, 0, 0.5);
-}
-.top-nav nav{
-  display:flex; align-items:center; gap:10px;
-}
-.hero{
-  height:90vh;
   display:flex;
-  align-items:center;
   justify-content:center;
-}
-.overlay{
-  background:rgba(0, 0, 0, 0.5);
-  padding:40px;
-  border-radius:20px;
-  text-align:center;
-  width:90%;
-  max-width:600px;
+  align-items:center;
+  height:100vh;
+  background: url("photo_2026-02-11_17-33-44.jpg") center/cover no-repeat;
 }
 
-/* ===== Tickets ===== */
+.login-card{
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(10px);
+  padding:40px;
+  width:350px;
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.6);
+  animation:fadeUp 1s ease;
+}
+
+.login-card input{
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  font-size:15px;
+}
+
+.login-note{
+  text-align:center;
+  font-size:14px;
+  opacity:0.8;
+}
+
+/* ================================================= */
+/* ================= الصفحة الرئيسية =============== */
+/* ================================================= */
+
+.pyramid-body{
+  background: url("metro-logo.jpg") center/cover no-repeat;
+  min-height:100vh;
+}
+
+.top-nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:15px 30px;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(6px);
+}
+
+.top-nav nav{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.hero{
+  height:85vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+.overlay{
+  background:rgba(0,0,0,0.6);
+  padding:40px;
+  border-radius:20px;
+  max-width:600px;
+  animation:fadeUp 1s ease;
+}
+
+#heroTitle{
+  font-size:40px;
+  margin-bottom:15px;
+  font-weight:bold;
+}
+
+#heroDesc{
+  font-size:20px;
+  opacity:0.9;
+}
+
+/* ================================================= */
+/* ================= صفحة التذاكر ================= */
+/* ================================================= */
+
 .ticket-container{
-  padding:20px;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(8px);
+  margin:40px auto;
+  padding:30px;
+  border-radius:20px;
+  max-width:500px;
   display:flex;
   flex-direction:column;
   gap:12px;
-  background: rgba(0,0,0,0.5);
-  border-radius:20px;
-  margin:20px auto;
-  width:90%;
-  max-width:500px;
-}
-.wallets button{
-  margin:5px 0;
+  animation:fadeUp 1s ease;
 }
 
-/* ===== Map ===== */
+.ticket-container select,
+.ticket-container input{
+  padding:10px;
+  border-radius:8px;
+  border:none;
+}
+
+.wallets{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.wallet-btn{
+  flex:1 1 48%;
+}
+
+/* ================================================= */
+/* ================= الخريطة ======================= */
+/* ================================================= */
+
 #map{
-  height:90vh;
+  height:85vh;
   margin:20px;
-  border-radius:15px;
+  border-radius:20px;
+  overflow:hidden;
 }
 
-/* ===== Buttons ===== */
+/* ================================================= */
+/* ================= الأزرار ======================= */
+/* ================================================= */
+
 .main-btn{
-  padding:12px;
-  font-weight:bold;
+  padding:12px 16px;
+  border:none;
   border-radius:12px;
-  background: linear-gradient(135deg,#6a11cb,#1dfb12);
-  color:rgb(241, 239, 200);
+  background:linear-gradient(135deg,#6a11cb,#2575fc);
+  color:white;
+  font-weight:bold;
   cursor:pointer;
-  transition:0.3s;
+  transition:0.3s ease;
 }
+
 .main-btn:hover{
   transform:scale(1.05);
-  box-shadow:0 5px 20px rgba(0, 0, 0, 0.5);
+  box-shadow:0 8px 25px rgba(0,0,0,0.5);
 }
 
-/* ===== Animations ===== */
-@keyframes fadeIn{0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
-@keyframes scaleUp{0%{transform:scale(0);opacity:0;}100%{transform:scale(1);opacity:1;}}
+/* ================================================= */
+/* ================= الانيميشن ===================== */
+/* ================================================= */
 
-/* ===== Loader ===== */
+@keyframes fadeUp{
+  from{
+    opacity:0;
+    transform:translateY(30px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* ================================================= */
+/* ================= Loader ======================== */
+/* ================================================= */
+
 #loader{
-  position: fixed; top:0; left:0;width:100%; height:100%;
-  background:#0f172a;
-  display:flex; justify-content:center; align-items:center;
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:#111;
+  display:flex;
+  justify-content:center;
+  align-items:center;
   z-index:1000;
 }
+
 #loader::after{
   content:"";
-  width:50px;height:50px;
+  width:50px;
+  height:50px;
   border:5px solid gold;
   border-top-color:transparent;
   border-radius:50%;
   animation:spin 1s linear infinite;
 }
-@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+
+@keyframes spin{
+  to{ transform:rotate(360deg); }
+}
+
+/* ================================================= */
+/* ================= Toast ========================= */
+/* ================================================= */
 
 #toast{
-  position:fixed; bottom:20px; right:20px;
-  background:gold; color:black;
-  padding:12px 20px; border-radius:10px;
-  opacity:0; transition:0.5s; z-index:2000;
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:gold;
+  color:black;
+  padding:12px 20px;
+  border-radius:10px;
+  opacity:0;
+  transition:0.4s;
+  z-index:2000;
 }
-#toast.show{opacity:1;}
+
+#toast.show{
+  opacity:1;
+}
+
+/* ================================================= */
+/* ================= Responsive 📱 ================= */
+/* ================================================= */
+
+@media (max-width:768px){
+
+  .login-card{
+    width:90%;
+    padding:25px;
+  }
+
+  .top-nav{
+    flex-direction:column;
+    gap:10px;
+    text-align:center;
+  }
+
+  .top-nav nav{
+    flex-direction:column;
+    width:100%;
+  }
+
+  .main-btn{
+    width:100%;
+  }
+
+  .overlay{
+    width:90%;
+    padding:25px;
+  }
+
+  #heroTitle{
+    font-size:28px;
+  }
+
+  #heroDesc{
+    font-size:16px;
+  }
+
+  .ticket-container{
+    width:90%;
+    padding:20px;
+  }
+
+  .wallet-btn{
+    flex:1 1 100%;
+  }
+
+  #map{
+    height:60vh;
+    margin:10px;
+  }
+
+}
