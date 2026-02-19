@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MetroX App</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+</head>
+<body class="login-body">
+
+<div id="loader"></div>
+<div id="toast"></div>
+
+<!-- Login -->
+<div id="page-login" class="page fade-in">
+  <div class="login-card">
+    <p class="login-note">مرحبًا بك في MetroX</p>
+    <input type="text" placeholder="البريد الإلكتروني">
+    <input type="password" placeholder="كلمة المرور">
+    <button class="main-btn" onclick="showPage('home')">دخول</button>
+    <p class="login-note">تجربة تنقل ذكية وسريعة</p>
+  </div>
+</div>
+
+<!-- Home -->
+<div id="page-home" class="page fade-in" style="display:none;">
+<header class="top-nav">
+  <h2>MetroX</h2>
+  <button id="menuToggle" class="lux-btn">☰</button>
+  <nav id="menuOptions">
+    <button onclick="showPage('home')">🏠 الرئيسية</button>
+    <button onclick="showPage('map')">🗺 الخريطة</button>
+    <button onclick="showPage('tickets')">🎫 حجز التذاكر</button>
+    <button onclick="toggleMode()">🌙 الوضع</button>
+  </nav>
+</header>
+
+<section class="hero">
+<div class="overlay">
+<h1 id="heroTitle">مترو القاهرة</h1>
+<p id="heroDesc">تجربة تنقل ذكية وسريعة</p>
+</div>
+</section>
+</div>
+
+<!-- Tickets -->
+<div id="page-tickets" class="page fade-in" style="display:none;">
+<header>
+<button class="main-btn" onclick="showPage('home')">⬅ رجوع</button>
+</header>
+
+<div class="ticket-container">
+<h2>حجز تذكرة</h2>
+
+<label>اختر الخط:</label>
+<select id="lineSelect"></select>
+
+<label>من:</label>
+<select id="from"></select>
+
+<label>إلى:</label>
+<select id="to"></select>
+
+<label>عدد التذاكر:</label>
+<input type="number" id="qty" value="1" min="1">
+
+<h3>الدفع الإلكتروني:</h3>
+<select id="paymentSelect">
+  <option>فودافون كاش</option>
+  <option>أورنج كاش</option>
+  <option>اتصالات كاش</option>
+  <option>WE Pay</option>
+  <option>Visa</option>
+  <option>MasterCard</option>
+  <option>Apple Pay</option>
+  <option>Google Pay</option>
+</select>
+
+<button class="main-btn" onclick="generateTicket()">تأكيد الحجز</button>
+
+<div id="priceBox"></div>
+<svg id="barcode"></svg>
+<div id="qrcode"></div>
+
+</div>
+</div>
+
+<!-- Map -->
+<div id="page-map" class="page fade-in" style="display:none;">
+<header>
+<button class="main-btn" onclick="showPage('home')">⬅ رجوع</button>
+</header>
+<div id="map"></div>
+<button class="main-btn" id="showAllLines">عرض كل الخطوط</button>
+</div>
+
+<script src="script-spa.js"></script>
+</body>
+</html>
